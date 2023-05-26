@@ -13,6 +13,11 @@ allprojects {
     group 'io.hosuaby'
     version '0.4.0-SNAPSHOT'
 
+    java {
+        sourceCompatibility = JavaVersion.VERSION_19
+        targetCompatibility = JavaVersion.VERSION_19
+    }
+
     repositories {
         mavenCentral()
         mavenLocal()
@@ -56,7 +61,7 @@ def publishedProjects = subprojects.findAll { subproject ->
 }
 
 configure(publishedProjects) {
-    def javaVersion = JavaVersion.VERSION_1_8
+    def javaVersion = JavaVersion.VERSION_19
     Integer javaMajorVersion = Integer.parseInt(javaVersion.getMajorVersion())
 
     compileJava {
@@ -65,7 +70,7 @@ configure(publishedProjects) {
     }
 
     compileTestJava {
-        sourceCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_19
     }
 
     configurations {
@@ -93,32 +98,32 @@ configure(publishedProjects) {
 
     jacocoTestReport {
         reports {
-            xml.enabled = true
-            html.enabled = true
+            xml.required = true
+            html.required = true
         }
     }
 }
 
-task jacocoMerge(type: JacocoMerge) {
-    publishedProjects.each { subproject ->
-        executionData subproject.tasks.withType(Test)
-    }
-}
-
-task jacocoRootReport(type: JacocoReport) {
-    dependsOn publishedProjects.jacocoTestReport, project.jacocoMerge
-
-    additionalSourceDirs.from(files(publishedProjects.sourceSets.main.allSource.srcDirs))
-    sourceDirectories.from(files(publishedProjects.sourceSets.main.allSource.srcDirs))
-    classDirectories.from(files(publishedProjects.sourceSets.main.output))
-
-    executionData(jacocoMerge.destinationFile)
-
-    reports {
-        html.enabled = true
-        xml.enabled = true
-    }
-}
+//task jacocoMerge(type: JacocoMerge) {
+//    publishedProjects.each { subproject ->
+//        executionData subproject.tasks.withType(Test)
+//    }
+//}
+//
+//task jacocoRootReport(type: JacocoReport) {
+//    dependsOn publishedProjects.jacocoTestReport, project.jacocoMerge
+//
+//    additionalSourceDirs.from(files(publishedProjects.sourceSets.main.allSource.srcDirs))
+//    sourceDirectories.from(files(publishedProjects.sourceSets.main.allSource.srcDirs))
+//    classDirectories.from(files(publishedProjects.sourceSets.main.output))
+//
+//    executionData(jacocoMerge.destinationFile)
+//
+//    reports {
+//        html.enabled = true
+//        xml.enabled = true
+//    }
+//}
 
 coveralls {
     sourceDirs = publishedProjects.sourceSets.main.allSource.srcDirs.flatten()
